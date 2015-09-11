@@ -1,15 +1,15 @@
 <html>
-<!-- call as is to contain a 'quote of the day'   add   ?random to the URL to return a random 'Quote of the Day' each time it is called  -->
+<!-- call as is to contain a 'quote of the day' add ?random to the URL to return a random 'Quote of the Day' each time it is called, ?# to return #th quote  -->
 <title>Software Development Quote of the Day</title>
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <head>
 <script>
 
 var quotes = [
+["Some people, when confronted with a problem, think,<br> <br> 'I know, I'll use threads,' and then two they hav erpoblesms.<br> 'I know, I'll use floating point arithmetic.' Now they have 1.999999999997 problems.<br> 'I know, I'll use Regular Expressions.' Now they have two problems.<br> 'I know, I'll use Java.' Now they have a ProblemFactory.<br> 'I know, I'll use MySQL.' Now their problem is a single point of failure.<br> 'I know, I'll use MongoDB.' Now their problems are Web Scale.<br> 'I know, I'll use Crowdsourcing.' Now it's your problem.<br> <br> 'I know, I'll use Python.' Now they 'import solution' and have a beer.", "misc"],
 
 ["People don't want to be amazing at our tool. They want to be amazing at the context. It's not that customers say 'I'm amazing at this camera.' It's that they say 'I'm an amazing photographer.'", "Kathy Sierra exerpt from <a href='https://vimeo.com/106659444'>'Building Bad A$$ Users'</a> on Vimeo"],
 ["They [customers] don't want us for the tool, they want us for the thing they're using the tool to do. That bigger context. We make the tool. Users want the bigger context.", "Kathy Sierra exerpt from <a href='https://vimeo.com/106659444'>'Building Bad A$$ Users'</a> on Vimeo"],
-["Some people, when confronted with a problem, think,<br> <br> 'I know, I'll use threads,' and then two they hav erpoblesms.<br> 'I know, I'll use floating point arithmetic.' Now they have 1.999999999997 problems.<br> 'I know, I'll use Regular Expressions.' Now they have two problems.<br> 'I know, I'll use Java.' Now they have a ProblemFactory.<br> 'I know, I'll use MySQL.' Now their problem is a single point of failure.<br> 'I know, I'll use MongoDB.' Now their problems are Web Scale.<br> 'I know, I'll use Crowdsourcing.' Now it's your problem.<br> <br> 'I know, I'll use Python.' Now they 'import solution' and have a beer.", "misc"],
 ["The more they overthink the plumbing, the easier it is to stop up the drain.", "Star Trek III: The Search for Spock, Scotty"],
 ["That which does not kill us makes us stronger.", "Friedrich Nietzsche."],
 ["It is a capital mistake to theorize before one has data.", "Sherlock Holmes - Scandal in Bohemia"],
@@ -34,33 +34,59 @@ var quotes = [
 ];
 
 
-function htmlEncode(value){
-
+function htmlEncode(value)
+{
   //create a in-memory div, set it's inner text(which jQuery automatically encodes)
   //then grab the encoded contents back out.  The div never exists on the page.
   return $('<div/>').text(value).html();
 }
 
+
+function get_index_from_search_param()
+{
+    // return value of index on search line (?5) or NaN
+    var search_param=document.location.search;
+    if (search_param.length>1)
+    {
+        return parseInt(search_param.substr(1));
+    }
+    return NaN;
+}
+
+
 function doquote()
 {
     var do_random_quote_each_time=(document.location.search=="?random"?true:false);
-    var i=0;
-    var title="";
-    if (do_random_quote_each_time)
+    var title="Quote of the Day";
+
+    //get quote index
+    var i=get_index_from_search_param();
+    if (isNaN(i))
     {
-        title = "Random Quote of the Day";
-        i = Math.floor(Math.random() * quotes.length); // random quote
+        if (do_random_quote_each_time)
+        {
+            title = "Random Quote of the Day";
+            i = Math.floor(Math.random() * quotes.length); // random quote
+        }
+        else
+        {
+            var d = new Date();
+            i = Math.floor((d.getTime()/(24*60*60*1000)) % quotes.length); // QOTD 
+        }
+    }
+
+    //write out the correct quote or error msg
+    var br=document;
+    if (i>=0 && i <quotes.length)
+    {
+        br.writeln(title+"<br><br>");
+        br.writeln("<i><strong>"+htmlEncode(quotes[i][0]) + "</strong></i><br><br>");
+        br.writeln("<small>- " + htmlEncode(quotes[i][1]) + "</small><br>");
     }
     else
     {
-        title = "Quote of the Day";
-        var d = new Date();
-        i = Math.floor((d.getTime()/(24*60*60*1000)) % quotes.length); // QOTD 
+        br.writeln("invalid quote index: "+i);
     }
-    var br=document;
-    br.writeln(title+"<br><br>");
-    br.writeln("<i><strong>"+htmlEncode(quotes[i][0]) + "</strong></i><br><br>");
-    br.writeln("<small>- " + htmlEncode(quotes[i][1]) + "</small><br>");
 }
 </script>
 </head>
