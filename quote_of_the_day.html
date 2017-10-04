@@ -33,6 +33,7 @@ var quotes = [
 ["You can always edit a bad page. You can’t edit a blank page.", "Jodi Picoult #amwriting #writingtips"],
 ["One of my most productive days was throwing away 1000 lines of code.", "Ken Thompson"],
 ["Standards is an area that is constantly changing.", "Carl Cargill (ed. ACM StandardView)"],
+["Perfection is not attainable, but if we chase perfection we can catch excellence.","Vince Lombardi"]
 ];
 
 
@@ -75,7 +76,7 @@ function doquote()
         else
         {
             var d = new Date();
-            i = Math.floor((d.getTime()/(24*60*60*1000)) % quotes.length); // QOTD 
+            i = Math.floor((d.getTime()/(24*60*60*1000)) % quotes.length); // QOTD
         }
     }
 
